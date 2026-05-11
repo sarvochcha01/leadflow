@@ -1,53 +1,65 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Users, Trophy, Clock4, TrendingUp } from "lucide-react";
 
-interface Stat {
-  label: string;
-  value: string | number;
-  sub?: string;
-  subColor?: string;
-  icon: React.ReactNode;
-  iconColor: string;
+interface StatsData {
+  totalLeads: number;
+  newThisMonth: number;
+  wonCount: number;
+  conversionRate: number;
+  followUpsDue: number;
+  overdueCount: number;
 }
 
-const STATS: Stat[] = [
-  {
-    label: "Total leads",
-    value: 48,
-    sub: "+6 this month",
-    subColor: "var(--color-status-won)",
-    icon: <Users size={14} />,
-    iconColor: "var(--color-brand-400)",
-  },
-  {
-    label: "Won",
-    value: 12,
-    sub: "25% conversion",
-    subColor: "var(--color-status-won)",
-    icon: <Trophy size={14} />,
-    iconColor: "var(--color-status-won)",
-  },
-  {
-    label: "Follow-ups due",
-    value: 3,
-    sub: "2 overdue",
-    subColor: "var(--color-gold)",
-    icon: <Clock4 size={14} />,
-    iconColor: "var(--color-gold)",
-  },
-  {
-    label: "Pipeline value",
-    value: "$84k",
-    sub: "Up from $71k",
-    subColor: "var(--color-status-won)",
-    icon: <TrendingUp size={14} />,
-    iconColor: "var(--color-status-contacted)",
-  },
-];
-
 export default function StatsRow() {
+  const [stats, setStats] = useState<StatsData | null>(null);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then(setStats)
+      .catch(console.error);
+  }, []);
+
+  const items = [
+    {
+      label: "Total leads",
+      value: stats?.totalLeads ?? "—",
+      sub: stats ? `+${stats.newThisMonth} this month` : "",
+      subColor: "var(--color-status-won)",
+      icon: <Users size={14} />,
+      iconColor: "var(--color-brand-400)",
+    },
+    {
+      label: "Won",
+      value: stats?.wonCount ?? "—",
+      sub: stats ? `${stats.conversionRate}% conversion` : "",
+      subColor: "var(--color-status-won)",
+      icon: <Trophy size={14} />,
+      iconColor: "var(--color-status-won)",
+    },
+    {
+      label: "Follow-ups due",
+      value: stats?.followUpsDue ?? "—",
+      sub: stats?.overdueCount ? `${stats.overdueCount} overdue` : "None overdue",
+      subColor: stats?.overdueCount ? "var(--color-red)" : "var(--color-text-tertiary)",
+      icon: <Clock4 size={14} />,
+      iconColor: "var(--color-gold)",
+    },
+    {
+      label: "Pipeline",
+      value: stats ? `${stats.totalLeads - stats.wonCount}` : "—",
+      sub: "Active leads",
+      subColor: "var(--color-text-tertiary)",
+      icon: <TrendingUp size={14} />,
+      iconColor: "var(--color-status-contacted)",
+    },
+  ];
+
   return (
     <div className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      {STATS.map((s) => (
+      {items.map((s) => (
         <div
           key={s.label}
           className="rounded-[10px] border p-[18px]"

@@ -6,11 +6,15 @@ import Header from "@/components/Header";
 import LeadList from "@/components/LeadList";
 import StatsRow from "@/components/StatsRow";
 import Toolbar from "@/components/Toolbar";
+import LeadDialog from "@/components/LeadDialog";
 
 export default function Home() {
   const [leads, setLeads] = useState<LeadListItem[]>([]);
   const [filtered, setFiltered] = useState<LeadListItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  /* ── Selected lead for dialog ───────────────────────────── */
+  const [selectedLeadId, setSelectedLeadId] = useState<number | null>(null);
 
   /* ── Fetch ──────────────────────────────────────────────── */
   const fetchLeads = useCallback(async () => {
@@ -52,13 +56,22 @@ export default function Home() {
     setFiltered(result);
   }, [query, statusFilter, leads]);
 
-  /* ── Handlers (placeholders for Phase 3 & 4) ───────────── */
+  /* ── Handlers ───────────────────────────────────────────── */
   const handleAddLead = () => {
+    // Will open AddLeadDialog in Phase 4
     console.log("Add lead clicked");
   };
 
   const handleSelectLead = (lead: LeadListItem) => {
-    console.log("Selected lead:", lead.name);
+    setSelectedLeadId(lead.id);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedLeadId(null);
+  };
+
+  const handleMutate = () => {
+    fetchLeads(); // Refresh the lead list after any change
   };
 
   return (
@@ -79,6 +92,16 @@ export default function Home() {
           </>
         )}
       </main>
+
+      {/* Lead Timeline Dialog */}
+      {selectedLeadId !== null && (
+        <LeadDialog
+          leadId={selectedLeadId}
+          open={true}
+          onClose={handleCloseDialog}
+          onMutate={handleMutate}
+        />
+      )}
     </div>
   );
 }
