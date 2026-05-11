@@ -1,0 +1,15 @@
+services:
+  leadflow:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - leadflow-data:/app/data
+    environment:
+      - DATABASE_PATH=./data/leadflow.db
+      - NODE_ENV=production
+    restart: unless-stopped
+
+volumes:
+  leadflow-data:
+    driver: local

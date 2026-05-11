@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { LeadListItem, LeadStatus } from "@/lib/types";
 import Header from "@/components/Header";
 import LeadList from "@/components/LeadList";
@@ -75,6 +75,15 @@ export default function Home() {
     fetchLeads(); // Refresh the lead list after any change
   };
 
+  /* ── Status counts (from unfiltered leads) ───────────── */
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const lead of leads) {
+      counts[lead.status] = (counts[lead.status] || 0) + 1;
+    }
+    return counts;
+  }, [leads]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header onAddLead={handleAddLead} />
@@ -88,6 +97,8 @@ export default function Home() {
             <Toolbar
               onSearch={setQuery}
               onFilter={setStatusFilter}
+              statusCounts={statusCounts}
+              totalCount={leads.length}
             />
             <LeadList leads={filtered} onSelectLead={handleSelectLead} />
           </>
@@ -121,7 +132,7 @@ function LoadingSkeleton() {
       {[...Array(5)].map((_, i) => (
         <div
           key={i}
-          className="animate-pulse rounded-[10px] border p-[18px]"
+          className="skeleton-shimmer rounded-[10px] border p-[18px]"
           style={{
             background: "var(--color-surface-1)",
             borderColor: "var(--color-border-subtle)",

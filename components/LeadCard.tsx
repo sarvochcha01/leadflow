@@ -39,7 +39,7 @@ export default function LeadCard({ lead, onClick }: LeadCardProps) {
     <button
       id={`lead-card-${lead.id}`}
       onClick={onClick}
-      className="lead-card relative w-full cursor-pointer overflow-hidden rounded-[10px] border text-left"
+      className="lead-card focus-glow relative w-full cursor-pointer overflow-hidden rounded-[10px] border text-left"
       style={{
         background: "var(--color-surface-1)",
         borderColor,

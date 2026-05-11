@@ -41,7 +41,7 @@ function SectionLabel({
         </span>
       )}
       <span
-        className="h-px flex-1"
+        className="section-line h-px flex-1"
         style={{ background: "var(--color-border-subtle)" }}
       />
     </div>
@@ -102,7 +102,7 @@ export default function LeadList({ leads, onSelectLead }: LeadListProps) {
   const otherLeads = leads.filter((l) => !priorityIds.has(l.id));
 
   return (
-    <div className="space-y-6">
+    <div className="fade-up space-y-6">
       {todayFollowUps.length > 0 && (
         <section>
           <SectionLabel color="var(--color-gold)" count={todayFollowUps.length}>

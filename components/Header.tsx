@@ -57,7 +57,7 @@ export default function Header({ onAddLead }: HeaderProps) {
 
         <button
           onClick={onAddLead}
-          className="flex h-[34px] cursor-pointer items-center gap-1.5 rounded-[6px] border-0 px-[14px] text-[13px] font-medium text-white transition-all hover:brightness-110 active:scale-[0.97]"
+          className="btn-press focus-glow flex h-[34px] cursor-pointer items-center gap-1.5 rounded-[6px] border-0 px-[14px] text-[13px] font-medium text-white transition-all hover:brightness-110"
           style={{
             background: "var(--color-brand-500)",
             boxShadow: "0 0 16px rgba(99,102,241,.25)",
@@ -81,7 +81,7 @@ function IconButton({
   return (
     <button
       aria-label={ariaLabel}
-      className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-[6px] border transition-all"
+      className="focus-glow flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-[6px] border transition-all"
       style={{
         background: "transparent",
         borderColor: "var(--color-border-default)",

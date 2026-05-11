@@ -58,11 +58,11 @@ export default function StatsRow() {
   ];
 
   return (
-    <div className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="fade-up mb-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
       {items.map((s) => (
         <div
           key={s.label}
-          className="rounded-[10px] border p-[18px]"
+          className="stat-card rounded-[10px] border p-[18px]"
           style={{
             background: "var(--color-surface-1)",
             borderColor: "var(--color-border-subtle)",
