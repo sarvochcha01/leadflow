@@ -8,8 +8,8 @@ export const CREATE_LEADS_TABLE = `
     phone       TEXT,
     status      TEXT    NOT NULL DEFAULT 'New',
     follow_up_at TEXT,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
-    updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+    created_at  TEXT    NOT NULL,
+    updated_at  TEXT    NOT NULL
   );
 `;
 
@@ -19,7 +19,7 @@ export const CREATE_DISCUSSIONS_TABLE = `
     lead_id      INTEGER NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
     note         TEXT    NOT NULL,
     follow_up_at TEXT,
-    created_at   TEXT    NOT NULL DEFAULT (datetime('now'))
+    created_at   TEXT    NOT NULL
   );
 `;
 

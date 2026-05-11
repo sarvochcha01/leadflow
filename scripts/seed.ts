@@ -29,8 +29,8 @@ db.exec(`
     phone       TEXT,
     status      TEXT    NOT NULL DEFAULT 'New',
     follow_up_at TEXT,
-    created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
-    updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+    created_at  TEXT    NOT NULL,
+    updated_at  TEXT    NOT NULL
   );
 `);
 
@@ -40,7 +40,7 @@ db.exec(`
     lead_id      INTEGER NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
     note         TEXT    NOT NULL,
     follow_up_at TEXT,
-    created_at   TEXT    NOT NULL DEFAULT (datetime('now'))
+    created_at   TEXT    NOT NULL
   );
 `);
 
@@ -58,25 +58,25 @@ db.exec("DELETE FROM sqlite_sequence WHERE name='leads' OR name='discussions';")
 function daysAgo(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() - days);
-  return d.toISOString().replace("T", " ").slice(0, 19);
+  return d.toISOString();
 }
 
 function hoursAgo(hours: number): string {
   const d = new Date();
   d.setHours(d.getHours() - hours);
-  return d.toISOString().replace("T", " ").slice(0, 19);
+  return d.toISOString();
 }
 
 function todayAt(hour: number, minute: number = 0): string {
   const d = new Date();
   d.setHours(hour, minute, 0, 0);
-  return d.toISOString().replace("T", " ").slice(0, 19);
+  return d.toISOString();
 }
 
 function daysFromNow(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
-  return d.toISOString().replace("T", " ").slice(0, 19);
+  return d.toISOString();
 }
 
 // ── Seed Leads ─────────────────────────────────────────────────────

@@ -71,15 +71,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const now = new Date().toISOString();
     const stmt = db.prepare(`
-      INSERT INTO leads (name, company, phone, status)
-      VALUES (?, ?, ?, 'New')
+      INSERT INTO leads (name, company, phone, status, created_at, updated_at)
+      VALUES (?, ?, ?, 'New', ?, ?)
     `);
 
     const result = stmt.run(
       body.name.trim(),
       body.company?.trim() || null,
-      body.phone?.trim() || null
+      body.phone?.trim() || null,
+      now,
+      now
     );
 
     const lead = db

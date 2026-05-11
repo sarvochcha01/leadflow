@@ -78,16 +78,21 @@ function EmptyState() {
 export default function LeadList({ leads, onSelectLead }: LeadListProps) {
   if (leads.length === 0) return <EmptyState />;
 
-  const todayFollowUps = leads.filter(
-    (l) => l.follow_up_at && isToday(new Date(l.follow_up_at))
-  );
+  const now = new Date();
 
-  const overdueFollowUps = leads.filter(
-    (l) =>
-      l.follow_up_at &&
-      isBefore(new Date(l.follow_up_at), new Date()) &&
-      !isToday(new Date(l.follow_up_at))
-  );
+  // Today but still upcoming (time hasn't passed yet)
+  const todayFollowUps = leads.filter((l) => {
+    if (!l.follow_up_at) return false;
+    const d = new Date(l.follow_up_at);
+    return isToday(d) && !isBefore(d, now);
+  });
+
+  // Any follow-up whose time has passed (including earlier today)
+  const overdueFollowUps = leads.filter((l) => {
+    if (!l.follow_up_at) return false;
+    const d = new Date(l.follow_up_at);
+    return isBefore(d, now);
+  });
 
   const priorityIds = new Set([
     ...todayFollowUps.map((l) => l.id),

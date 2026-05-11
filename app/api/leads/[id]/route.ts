@@ -69,9 +69,10 @@ export async function PATCH(
       return Response.json({ error: "Lead not found" }, { status: 404 });
     }
 
+    const now = new Date().toISOString();
     db.prepare(
-      "UPDATE leads SET status = ?, updated_at = datetime('now') WHERE id = ?"
-    ).run(body.status, Number(id));
+      "UPDATE leads SET status = ?, updated_at = ? WHERE id = ?"
+    ).run(body.status, now, Number(id));
 
     const updated = db
       .prepare("SELECT * FROM leads WHERE id = ?")

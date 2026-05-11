@@ -59,29 +59,32 @@ export async function POST(
       return Response.json({ error: "Lead not found" }, { status: 404 });
     }
 
+    const now = new Date().toISOString();
+
     // Insert the discussion
     const insertStmt = db.prepare(`
-      INSERT INTO discussions (lead_id, note, follow_up_at)
-      VALUES (?, ?, ?)
+      INSERT INTO discussions (lead_id, note, follow_up_at, created_at)
+      VALUES (?, ?, ?, ?)
     `);
 
     const result = insertStmt.run(
       Number(id),
       body.note.trim(),
-      body.follow_up_at || null
+      body.follow_up_at || null,
+      now
     );
 
     // If a follow-up was set, update the lead's follow_up_at
     if (body.follow_up_at) {
       db.prepare(
-        "UPDATE leads SET follow_up_at = ?, updated_at = datetime('now') WHERE id = ?"
-      ).run(body.follow_up_at, Number(id));
+        "UPDATE leads SET follow_up_at = ?, updated_at = ? WHERE id = ?"
+      ).run(body.follow_up_at, now, Number(id));
     }
 
     // Always update the lead's updated_at timestamp
     db.prepare(
-      "UPDATE leads SET updated_at = datetime('now') WHERE id = ?"
-    ).run(Number(id));
+      "UPDATE leads SET updated_at = ? WHERE id = ?"
+    ).run(now, Number(id));
 
     const discussion = db
       .prepare("SELECT * FROM discussions WHERE id = ?")

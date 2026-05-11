@@ -7,6 +7,7 @@ import LeadList from "@/components/LeadList";
 import StatsRow from "@/components/StatsRow";
 import Toolbar from "@/components/Toolbar";
 import LeadDialog from "@/components/LeadDialog";
+import AddLeadDialog from "@/components/AddLeadDialog";
 
 export default function Home() {
   const [leads, setLeads] = useState<LeadListItem[]>([]);
@@ -15,6 +16,7 @@ export default function Home() {
 
   /* ── Selected lead for dialog ───────────────────────────── */
   const [selectedLeadId, setSelectedLeadId] = useState<number | null>(null);
+  const [showAddLead, setShowAddLead] = useState(false);
 
   /* ── Fetch ──────────────────────────────────────────────── */
   const fetchLeads = useCallback(async () => {
@@ -58,8 +60,7 @@ export default function Home() {
 
   /* ── Handlers ───────────────────────────────────────────── */
   const handleAddLead = () => {
-    // Will open AddLeadDialog in Phase 4
-    console.log("Add lead clicked");
+    setShowAddLead(true);
   };
 
   const handleSelectLead = (lead: LeadListItem) => {
@@ -102,6 +103,13 @@ export default function Home() {
           onMutate={handleMutate}
         />
       )}
+
+      {/* Add New Lead Dialog */}
+      <AddLeadDialog
+        open={showAddLead}
+        onClose={() => setShowAddLead(false)}
+        onCreated={handleMutate}
+      />
     </div>
   );
 }

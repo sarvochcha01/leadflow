@@ -13,9 +13,9 @@ interface LeadCardProps {
 
 export default function LeadCard({ lead, onClick }: LeadCardProps) {
   const followUp = lead.follow_up_at ? new Date(lead.follow_up_at) : null;
-  const isFollowUpToday = followUp ? isToday(followUp) : false;
-  const isOverdue =
-    followUp && !isToday(followUp) ? isBefore(followUp, new Date()) : false;
+  const now = new Date();
+  const isFollowUpToday = followUp ? isToday(followUp) && !isBefore(followUp, now) : false;
+  const isOverdue = followUp ? isBefore(followUp, now) : false;
 
   const timeAgo = lead.last_discussion_at
     ? formatDistanceToNow(new Date(lead.last_discussion_at), { addSuffix: true })
