@@ -1,65 +1,123 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import type { LeadListItem, LeadStatus } from "@/lib/types";
+import Header from "@/components/Header";
+import LeadList from "@/components/LeadList";
+import StatsRow from "@/components/StatsRow";
+import Toolbar from "@/components/Toolbar";
 
 export default function Home() {
+  const [leads, setLeads] = useState<LeadListItem[]>([]);
+  const [filtered, setFiltered] = useState<LeadListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  /* ── Fetch ──────────────────────────────────────────────── */
+  const fetchLeads = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/leads");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data: LeadListItem[] = await res.json();
+      setLeads(data);
+      setFiltered(data);
+    } catch (err) {
+      console.error("Error fetching leads:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLeads();
+  }, [fetchLeads]);
+
+  /* ── Search + filter ────────────────────────────────────── */
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"All" | LeadStatus>("All");
+
+  useEffect(() => {
+    let result = leads;
+    if (statusFilter !== "All") {
+      result = result.filter((l) => l.status === statusFilter);
+    }
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      result = result.filter(
+        (l) =>
+          l.name.toLowerCase().includes(q) ||
+          l.company?.toLowerCase().includes(q)
+      );
+    }
+    setFiltered(result);
+  }, [query, statusFilter, leads]);
+
+  /* ── Handlers (placeholders for Phase 3 & 4) ───────────── */
+  const handleAddLead = () => {
+    console.log("Add lead clicked");
+  };
+
+  const handleSelectLead = (lead: LeadListItem) => {
+    console.log("Selected lead:", lead.name);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex min-h-screen flex-col">
+      <Header onAddLead={handleAddLead} />
+
+      <main className="mx-auto w-full max-w-[860px] flex-1 px-6 py-7">
+        {loading ? (
+          <LoadingSkeleton />
+        ) : (
+          <>
+            <StatsRow />
+            <Toolbar
+              onSearch={setQuery}
+              onFilter={setStatusFilter}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            <LeadList leads={filtered} onSelectLead={handleSelectLead} />
+          </>
+        )}
       </main>
+    </div>
+  );
+}
+
+/* ── Loading skeleton ───────────────────────────────────────── */
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-2.5">
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={i}
+          className="animate-pulse rounded-[10px] border p-[18px]"
+          style={{
+            background: "var(--color-surface-1)",
+            borderColor: "var(--color-border-subtle)",
+          }}
+        >
+          <div className="flex items-center gap-4">
+            <div
+              className="h-[38px] w-[38px] flex-shrink-0 rounded-[9px]"
+              style={{ background: "var(--color-surface-3)" }}
+            />
+            <div className="flex-1 space-y-2">
+              <div
+                className="h-[14px] w-[160px] rounded-[4px]"
+                style={{ background: "var(--color-surface-3)" }}
+              />
+              <div
+                className="h-[12px] w-[260px] rounded-[4px]"
+                style={{ background: "var(--color-surface-2)" }}
+              />
+            </div>
+            <div
+              className="h-[22px] w-[72px] rounded-[4px]"
+              style={{ background: "var(--color-surface-3)" }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

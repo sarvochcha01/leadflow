@@ -1,26 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Instrument+Serif:ital@0;1&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* ── Brand ──────────────────────────────────────────────── */
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+
+  /* ── Surfaces ───────────────────────────────────────────── */
+  --color-surface-0: #0d1117;
+  --color-surface-1: #161b22;
+  --color-surface-2: #1c2230;
+  --color-surface-3: #222b3a;
+
+  /* ── Borders ────────────────────────────────────────────── */
+  --color-border-subtle: rgba(255,255,255,.07);
+  --color-border-default: rgba(255,255,255,.12);
+  --color-border-strong: rgba(255,255,255,.18);
+
+  /* ── Text ───────────────────────────────────────────────── */
+  --color-text-primary: #f0f4ff;
+  --color-text-secondary: #8892a4;
+  --color-text-tertiary: #4e5a6b;
+
+  /* ── Status colours ─────────────────────────────────────── */
+  --color-status-new: #60a5fa;
+  --color-status-new-bg: rgba(96,165,250,.12);
+  --color-status-new-border: rgba(96,165,250,.18);
+
+  --color-status-contacted: #a78bfa;
+  --color-status-contacted-bg: rgba(167,139,250,.12);
+  --color-status-contacted-border: rgba(167,139,250,.18);
+
+  --color-status-qualified: #fbbf24;
+  --color-status-qualified-bg: rgba(251,191,36,.12);
+  --color-status-qualified-border: rgba(251,191,36,.18);
+
+  --color-status-proposal: #f472b6;
+  --color-status-proposal-bg: rgba(244,114,182,.12);
+  --color-status-proposal-border: rgba(244,114,182,.18);
+
+  --color-status-won: #22c55e;
+  --color-status-won-bg: rgba(34,197,94,.12);
+  --color-status-won-border: rgba(34,197,94,.18);
+
+  --color-status-lost: #6b7280;
+  --color-status-lost-bg: rgba(107,114,128,.12);
+  --color-status-lost-border: rgba(107,114,128,.18);
+
+  /* ── Alert colours ──────────────────────────────────────── */
+  --color-gold: #c9a84c;
+  --color-gold-bg: rgba(201,168,76,.12);
+  --color-red: #f87171;
+  --color-red-bg: rgba(248,113,113,.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base ─────────────────────────────────────────────────── */
+html { color-scheme: dark; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface-0);
+  color: var(--color-text-primary);
+  min-height: 100vh;
 }
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 3px; }
+
+/* ── Lead card hover ──────────────────────────────────────── */
+.lead-card {
+  transition: background 0.18s ease, border-color 0.18s ease,
+              box-shadow 0.18s ease, transform 0.18s ease;
+}
+.lead-card:hover {
+  background: var(--color-surface-2) !important;
+  border-color: var(--color-border-strong) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(0,0,0,.35);
+}
+.lead-card:active { transform: scale(0.99); }
+
+/* ── Pulse animation ──────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
